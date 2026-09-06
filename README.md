@@ -22,11 +22,14 @@ Flujo de la aplicación: **Vista → Controlador → Modelo → Base de datos**.
 catalogo-productos/
 ├── config/database.php          # Conexión PDO a MySQL
 ├── models/ProductoModel.php     # Operaciones sobre la tabla productos
+├── models/UsuarioModel.php      # Consulta de usuarios para el login
 ├── controllers/ProductoController.php  # Lógica de negocio y validación server-side
-├── views/                       # Formulario, listado y partials (header/footer)
+├── controllers/AuthController.php      # Login / logout
+├── views/                       # Formulario, listado, login y partials (header/footer)
 ├── public/css/styles.css        # Estilos
 ├── public/js/validaciones.js    # Validaciones del formulario en el navegador
 ├── database/integradora.sql     # Script de creación de la base de datos
+├── database/crear_admin.php     # Script de un solo uso para crear el primer usuario
 └── index.php                    # Front controller (enrutador de acciones)
 ```
 
@@ -34,15 +37,19 @@ catalogo-productos/
 
 1. Copiar la carpeta `catalogo-productos` dentro de `htdocs` de XAMPP.
 2. Iniciar los servicios **Apache** y **MySQL** desde el panel de control de XAMPP.
-3. Abrir **phpMyAdmin** (`http://localhost/phpmyadmin`) e importar el archivo `database/integradora.sql` (esto crea la base de datos `integradora` y la tabla `productos` con datos de ejemplo).
-4. Abrir en el navegador: `http://localhost/catalogo-productos/`.
+3. Abrir **phpMyAdmin** (`http://localhost/phpmyadmin`) e importar el archivo `database/integradora.sql` (esto crea la base de datos `integradora`, la tabla `productos` con datos de ejemplo y la tabla `usuarios`, vacía).
+4. Abrir `http://localhost/catalogo-productos/database/crear_admin.php` y crear el primer usuario (usuario + contraseña). Este script se bloquea solo en cuanto exista un usuario, y conviene eliminarlo después de usarlo.
+5. Abrir en el navegador: `http://localhost/catalogo-productos/`, iniciar sesión con el usuario creado.
+
+Por defecto, la conexión usa `host=localhost`, `usuario=root`, `password=` (vacía) — la configuración estándar de XAMPP. Si tu MySQL usa otras credenciales, defínelas como variables de entorno (`DB_HOST`, `DB_NAME`, `DB_USER`, `DB_PASSWORD`) en lugar de editar `config/database.php`.
 
 ## Funcionalidades
 
-- **Registrar producto**: formulario con validaciones en JavaScript (campos vacíos, longitud mínima del nombre, precio y cantidad numéricos y positivos) y validación adicional en el servidor.
+- **Inicio de sesión**: acceso protegido por usuario y contraseña (hash con `password_hash`/`password_verify`); sin sesión iniciada, cualquier acción redirige al login.
+- **Registrar producto**: formulario con validaciones en JavaScript (campos vacíos, longitud mínima del nombre, precio y cantidad numéricos y positivos) y validación adicional en el servidor (incluye longitudes máximas).
 - **Consultar productos**: listado en tabla HTML con todos los productos registrados.
 - **Buscar productos**: filtro por nombre o categoría.
-- **Eliminar producto**: elimina un registro con confirmación previa en el navegador.
+- **Eliminar producto**: elimina un registro mediante un formulario POST protegido con token CSRF, con confirmación previa en el navegador.
 
 ## Capturas de pantalla
 

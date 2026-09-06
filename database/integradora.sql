@@ -14,6 +14,16 @@ CREATE TABLE IF NOT EXISTS productos (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Tabla de usuarios para el inicio de sesión.
+-- No se inserta ningún usuario aquí: ejecuta una sola vez database/crear_admin.php
+-- para crear el primer usuario con una contraseña hasheada correctamente.
+CREATE TABLE IF NOT EXISTS usuarios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    usuario VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO productos (nombre, descripcion, categoria, precio, cantidad) VALUES
 ('Laptop HP 15', 'Laptop 8GB RAM, 256GB SSD', 'Electrónica', 549.99, 12),
 ('Mouse inalámbrico', 'Mouse óptico inalámbrico USB', 'Accesorios', 15.50, 40),

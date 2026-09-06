@@ -41,6 +41,28 @@ body {
     opacity: 0.85;
 }
 
+.cabecera-fila {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.sesion {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 0.9rem;
+}
+
+.boton-enlace-claro {
+    background-color: transparent;
+    color: #fff;
+    text-decoration: underline;
+    padding: 6px 0;
+}
+
 .tarjeta {
     background: #fff;
     border: 1px solid var(--color-borde);
@@ -95,9 +117,15 @@ body {
     border-radius: 6px;
     padding: 10px 18px;
     font-size: 0.95rem;
+    font-family: inherit;
     cursor: pointer;
     text-decoration: none;
     color: #fff;
+}
+
+.form-eliminar {
+    display: inline-block;
+    margin: 0;
 }
 
 .boton-primario {

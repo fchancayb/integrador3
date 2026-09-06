@@ -2,10 +2,18 @@
 
 class Database
 {
-    private string $host = 'localhost';
-    private string $dbName = 'integradora';
-    private string $user = 'root';
-    private string $password = '';
+    private string $host;
+    private string $dbName;
+    private string $user;
+    private string $password;
+
+    public function __construct()
+    {
+        $this->host = getenv('DB_HOST') ?: 'localhost';
+        $this->dbName = getenv('DB_NAME') ?: 'integradora';
+        $this->user = getenv('DB_USER') ?: 'root';
+        $this->password = getenv('DB_PASSWORD') ?: '';
+    }
 
     public function getConnection(): PDO
     {

@@ -83,8 +83,11 @@
                             <td><?php echo htmlspecialchars($producto['cantidad']); ?></td>
                             <td><?php echo htmlspecialchars($producto['fecha_registro']); ?></td>
                             <td>
-                                <a href="index.php?accion=eliminar&id=<?php echo (int) $producto['id']; ?>"
-                                   class="boton boton-peligro boton-eliminar">Eliminar</a>
+                                <form action="index.php?accion=eliminar" method="POST" class="form-eliminar">
+                                    <input type="hidden" name="id" value="<?php echo (int) $producto['id']; ?>">
+                                    <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($csrfToken); ?>">
+                                    <button type="submit" class="boton boton-peligro boton-eliminar">Eliminar</button>
+                                </form>
                             </td>
                         </tr>
                     <?php endforeach; ?>

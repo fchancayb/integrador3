@@ -23,6 +23,8 @@ class ProductoController
         $tipoMensaje = $_SESSION['tipo_mensaje'] ?? null;
         unset($_SESSION['mensaje'], $_SESSION['tipo_mensaje']);
 
+        $csrfToken = $this->obtenerTokenCSRF();
+
         require __DIR__ . '/../views/index.php';
     }
 
@@ -34,7 +36,7 @@ class ProductoController
         $precio = $_POST['precio'] ?? '';
         $cantidad = $_POST['cantidad'] ?? '';
 
-        $errores = $this->validar($nombre, $categoria, $precio, $cantidad);
+        $errores = $this->validar($nombre, $descripcion, $categoria, $precio, $cantidad);
 
         if (!empty($errores)) {
             $_SESSION['mensaje'] = implode(' ', $errores);
@@ -60,7 +62,14 @@ class ProductoController
 
     public function eliminar(): void
     {
-        $id = $_GET['id'] ?? null;
+        $id = $_POST['id'] ?? null;
+        $token = $_POST['csrf_token'] ?? '';
+
+        if (!$this->validarTokenCSRF($token)) {
+            $_SESSION['mensaje'] = 'Solicitud inválida. Intenta nuevamente.';
+            $_SESSION['tipo_mensaje'] = 'error';
+            $this->redirigir();
+        }
 
         if (!ctype_digit((string) $id)) {
             $_SESSION['mensaje'] = 'Identificador de producto inválido.';
@@ -78,16 +87,24 @@ class ProductoController
         $this->redirigir();
     }
 
-    private function validar(string $nombre, string $categoria, $precio, $cantidad): array
+    private function validar(string $nombre, string $descripcion, string $categoria, $precio, $cantidad): array
     {
         $errores = [];
 
         if ($nombre === '' || mb_strlen($nombre) < 3) {
             $errores[] = 'El nombre debe tener al menos 3 caracteres.';
+        } elseif (mb_strlen($nombre) > 100) {
+            $errores[] = 'El nombre no puede superar los 100 caracteres.';
+        }
+
+        if (mb_strlen($descripcion) > 255) {
+            $errores[] = 'La descripción no puede superar los 255 caracteres.';
         }
 
         if ($categoria === '') {
             $errores[] = 'La categoría es obligatoria.';
+        } elseif (mb_strlen($categoria) > 50) {
+            $errores[] = 'La categoría no puede superar los 50 caracteres.';
         }
 
         if ($precio === '' || !is_numeric($precio) || (float) $precio <= 0) {
@@ -99,6 +116,20 @@ class ProductoController
         }
 
         return $errores;
+    }
+
+    private function obtenerTokenCSRF(): string
+    {
+        if (empty($_SESSION['csrf_token'])) {
+            $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+        }
+
+        return $_SESSION['csrf_token'];
+    }
+
+    private function validarTokenCSRF(string $token): bool
+    {
+        return $token !== '' && hash_equals($_SESSION['csrf_token'] ?? '', $token);
     }
 
     private function redirigir(): void
