@@ -66,3 +66,5 @@ Este proyecto se desarrolló utilizando Git con commits incrementales que docume
 5. Configuración de conexión con MySQL
 6. Implementación del modelo y controlador
 7. Registro, consulta, búsqueda y eliminación de datos desde MySQL
+8. Autenticación, protección CSRF, validaciones de longitud y manejo de errores
+9. Restauración de database/crear_admin.php
